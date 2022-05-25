@@ -38,3 +38,22 @@
     transform: rotate(360deg);
   }
 }
+.review-link {
+    text-decoration: none;  
+    color: black;
+    padding: 6px 20px;
+    font-size: 16px;
+    box-shadow: 1px 1px 5px 0 rgb(0 0 0 / 25%);
+    background: #e6e6e6;
+    border-color: #e6e6e6;
+    border-radius: 10px;
+}
+.review-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.review-link:hover {
+  background-color: rgb(226, 226, 226);
+  color: black;
+}

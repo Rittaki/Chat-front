@@ -88,8 +88,8 @@ export default function Login() {
     return (
         <div className="container-fluid">
             <div className="row">
-                <div className="col-md-3 col-sm-4 col-xs-12"></div>
-                <div className="col-md-4 col-sm-4 col-xs-12">
+                {/*<div className="col-md-3 col-sm-4 col-xs-12"></div>*/}
+                {/*<div className="col-md-4 col-sm-4 col-xs-12">*/}
                     <div className="mt-20">
                         <form className="form-container" onSubmit={sunbmitFun}>
                             <h1>Login</h1>
@@ -110,7 +110,7 @@ export default function Login() {
                             </div>
                         </form>
                     </div>
-                </div>
+                {/*</div>*/}
             </div>
         </div>
     );
