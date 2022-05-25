@@ -7,6 +7,7 @@ import ChatMessages from './chatMessages/ChatMessages';
 function Chat(props) {
 
 
+    const [checkDatabaseForContacts, setCheckDatabaseForContacts] = useState(false);
 
     const [selectedContact, SetSelectedContact] = useState({});
     //for search bar
@@ -15,8 +16,7 @@ function Chat(props) {
     const [newContactNickname, setNewContactNickname] = useState("");
     const [newContact, setNewContact] = useState("");
     const [newContactServer, setNewContactServer] = useState("");
-
-
+    const [inValidNewContact, setInValidNewContact] = useState(false);
     const [newContactError, setNewContactError] = useState("");
 
     const [show, setShow] = useState(false);
@@ -27,7 +27,6 @@ function Chat(props) {
 
     //contacts of current user
     const [list, setList] = useState([]);
-    const [checkDatabaseForContacts, setCheckDatabaseForContacts] = useState(false);
     useEffect (()=>{
         setCheckDatabaseForContacts(true);
     },[]);
@@ -94,6 +93,8 @@ function Chat(props) {
         setNewContact("");
         setNewContactServer("");
         setNewContactError("");
+        setInValidNewContact(false);
+        setNewContactError("")
     };
 
     //checks if added contact is valid without checking database
@@ -105,21 +106,33 @@ function Chat(props) {
             setNewContactError("can't add yourself as contact");
         }
         else {
-            list.map((item) => compareContacts(item))
-            if(newContactError==""){
-                AddContact();
-                InviteContact();
+            AddContactByOrder();
         }
     }
-}
+
+
+    const AddContactByOrder = async () => {
+        const result = await InviteContact()
+        if(result==0){
+            setNewContactError(`There's no such user in ${newContactServer}`);
+        }
+        else if(result==1){
+            setNewContactError(`${newContact} is already a contact`);
+        }
+        else{
+            AddContact();
+            updateContacts();
+        }
+    }
+
     function updateContacts(){
+        handleClose();
         if(checkDatabaseForContacts){
             setCheckDatabaseForContacts(false);
         }
         else{
             setCheckDatabaseForContacts(true);
         }
-        handleClose();
     }
     async function AddContact(){
         const headers = new Headers();
@@ -131,7 +144,6 @@ function Chat(props) {
             body: JSON.stringify({id:newContact,name:newContactNickname,server:newContactServer,user:props.user.userName})
           };
         await fetch('https://localhost:7038/api/contacts/AddContact', init);
-        updateContacts();
     }
 
     async function InviteContact(){
@@ -143,7 +155,14 @@ function Chat(props) {
             headers,
             body: JSON.stringify({from:props.user.userName,to:newContact,server:newContactServer})
           };
-        await fetch('https://localhost:7038/api/invitation/AddContact', init);
+        const response=await fetch('https://localhost:7038/api/invitation/AddContact', init);
+        if(response.status==404){
+            return 0;
+        }
+        else if(response.status==400){
+            return 1;
+        }
+        return 2;
     }
 
 
@@ -152,6 +171,7 @@ function Chat(props) {
     function compareContacts(item) {
         if (item.id === newContact) {
             setNewContactError(`${newContact} is already a contact`);
+            setInValidNewContact(true);
         }
 
     }

@@ -36,7 +36,6 @@ export default function Login() {
         let data;
         if (mediaType.includes('json')) {
           data = await response.json();
-          console.log(data);
           if(data!="Failed"){
               setIsFound(true);
               setIsChecked(true)
