@@ -3,6 +3,8 @@ import './Chat.css';
 import { Modal, Button } from 'react-bootstrap';
 import AddNewContact from './addContact/AddNewContact';
 import ChatMessages from './chatMessages/ChatMessages';
+import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
+
 
 function Chat(props) {
 
@@ -24,6 +26,30 @@ function Chat(props) {
     //info about the current user
     
     //const [saveUser, setSaveUser] = useState((props.user === undefined) ? JSON.parse(localStorage.getItem('user')) : props.user);
+
+
+    const [connection, setConnection] = useState(null);
+
+    useEffect(() => {
+        const connect = new HubConnectionBuilder()
+            .withUrl("https://localhost:7038/myHub")
+            .configureLogging(LogLevel.Information)
+            .build();
+        setConnection(connect);
+    },[]);
+
+    useEffect(() => {
+        if(!connection) {
+            return;
+        }
+        connection.start().then(() => {
+            connection.on("ChangeRecieved", (newContact) => {
+                console.log('received: ' + newContact);
+                setCheckDatabaseForContacts(true);
+                setCheckDatabaseForContacts(false);
+            })
+        })      
+    }, [connection]);
 
     //contacts of current user
     const [list, setList] = useState([]);
@@ -122,6 +148,7 @@ function Chat(props) {
         else{
             AddContact();
             updateContacts();
+            await connection.invoke("Changed", newContact);
         }
     }
 
