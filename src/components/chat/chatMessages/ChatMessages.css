@@ -69,6 +69,11 @@
     word-wrap: break-word;
 }
 
+.chat-bubble--left>.text-muted {
+    direction: ltr;
+    max-width: 350px;
+    word-wrap: break-word;
+}
 .chat-bubble--right>.time {
     font-size: x-small;
 }

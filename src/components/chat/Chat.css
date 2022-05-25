@@ -117,7 +117,7 @@ input:focus {
     font-size: large;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     vertical-align: middle;
-    margin-top: 2px;
+    margin-top: 5%;
     margin-bottom: 0;
     background: white;
 }
@@ -125,7 +125,7 @@ input:focus {
     font-size: large;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     vertical-align: middle;
-    margin-top: 2px;
+    margin-top: 5%;
     margin-bottom: 0;
     background: palegreen; 
 }
@@ -256,7 +256,7 @@ div.container-fluid.chat {
     position: relative;
 }
 .contacts-map .time-text-muted-small{
-      font-size:medium;
+      font-size:x-small;
       right:2%;
       position: absolute;
   }

@@ -7,6 +7,7 @@ import ChatMessages from './chatMessages/ChatMessages';
 function Chat(props) {
 
 
+
     const [selectedContact, SetSelectedContact] = useState({});
     //for search bar
     const [search, setSearch] = useState("");
@@ -15,14 +16,10 @@ function Chat(props) {
     const [newContact, setNewContact] = useState("");
     const [newContactServer, setNewContactServer] = useState("");
 
-    const [inDatabase, setInDatabase] = useState(false);
-    const [isContact, setIsContact] = useState(false);
 
     const [newContactError, setNewContactError] = useState("");
 
     const [show, setShow] = useState(false);
-    const [addContactSubmit, setAddContactSubmit] = useState(false);
-    const [currnetContact, setCurrentContact] = useState({});
     //last message update and time since
     //info about the current user
     
@@ -43,10 +40,7 @@ function Chat(props) {
         let data;
         if (mediaType.includes('json')) {
             data = await response.json();
-        } else {
-            data = [];
-        }
-        console.log(data);
+        } 
         setList(data)
     }
     findContacts()
@@ -80,7 +74,7 @@ function Chat(props) {
                         <p className={(selectedContact.name === contact.name) ? "selected-text-muted" : "text-muted"}>{contact.last}</p>
                     </div>
                 
-                    <span className="time-text-muted-small">{contact.lastdate}</span>
+                    <span className="time-text-muted-small">{(contact.last==null)?null:contact.lastdate}</span>
                 </div>
                 <hr />
             </div>
@@ -99,86 +93,67 @@ function Chat(props) {
         setNewContactNickname("");
         setNewContact("");
         setNewContactServer("");
-        setInDatabase(false);
-        setIsContact(false);
         setNewContactError("");
-        setAddContactSubmit(false);
     };
 
-    var contact = {};
     //checks if added contact is valid without checking database
     const handleAddContact = () => {
-        setAddContactSubmit(true);
-        setIsContact(false);
         if (newContact === "" || newContactNickname === "" || newContactServer === "") {
             setNewContactError("all fields are required");
-            setAddContactSubmit(false);
         }
         else if (newContact === props.user.userName) {
             setNewContactError("can't add yourself as contact");
-            setAddContactSubmit(false);
         }
         else {
-            contact = {newContactNickname, newContact, newContactServer};
-            console.log(contact);
             list.map((item) => compareContacts(item))
+            if(newContactError==""){
+                AddContact();
+                InviteContact();
         }
     }
-
-
-
-
-    //changes last message in contact panel when a message is sent and moving the contact to the top of the contact list
-    /*
-    useEffect(() => {
-        if (lastMessage != "") {
-            array.map((contact) => {
-                if (contact.name == selectedContact.name) {
-                    contact.message = lastMessage;
-                    contact.time = -1;
-                }
-            })
-            array.sort((a, b) => (a.time > b.time) ? 1 : (a.time === b.time) ? 0 : -1)
-            array.map((contact) => {
-                if (contact.name == selectedContact.name) {
-                    contact.time = 0;
-                }
-            })
-            setLastMessage("");
+}
+    function updateContacts(){
+        if(checkDatabaseForContacts){
+            setCheckDatabaseForContacts(false);
         }
-    }, [lastMessage])
-    
-
-    //updating the time since last message every minute
-    useEffect(() => {
-        const interval = setInterval(() => {
-            array.map((contact) => {
-                contact.time += 1;;
-                setMinutes((minutes) => minutes + 1);
-            })
-        }, 1000 * 60);
-
-        return () => clearInterval(interval);
-    }, []);
-    */
-
-
-/*
-    //saves user info so in case of a refresh it will stay in his chat page
-    useEffect(() => {
-        if (props.user != undefined) {
-            localStorage.setItem('user', JSON.stringify(props.user))
+        else{
+            setCheckDatabaseForContacts(true);
         }
-    }, []);
-*/
+        handleClose();
+    }
+    async function AddContact(){
+        const headers = new Headers();
+        headers.append('content-type', 'application/json');
+
+        const init = {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({id:newContact,name:newContactNickname,server:newContactServer,user:props.user.userName})
+          };
+        await fetch('https://localhost:7038/api/contacts/AddContact', init);
+        updateContacts();
+    }
+
+    async function InviteContact(){
+        const headers = new Headers();
+        headers.append('content-type', 'application/json');
+
+        const init = {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({from:props.user.userName,to:newContact,server:newContactServer})
+          };
+        await fetch('https://localhost:7038/api/invitation/AddContact', init);
+    }
 
 
 
     //checks if added contact is already a contact of current user
     function compareContacts(item) {
-        if (item.name === newContact) {
-            setIsContact(true);
+        if (item.id === newContact) {
+            setNewContactError(`${newContact} is already a contact`);
         }
+
     }
     return (
         <div className="container-fluid chat">
