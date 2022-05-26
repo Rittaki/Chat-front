@@ -39,28 +39,9 @@ export default function ChatMessages(props) {
     const handleShowAudioModal = () => setShowAudioModal(true);
 
 
-    const [text, setText] = useState("");
     const [connection, setConnection] = useState(null);
 
-    // async function newMessage() {
-    //     try {const connection = new HubConnectionBuilder()
-    //         .withUrl("https://localhost:7038/myHub")
-    //         .configureLogging(LogLevel.Information)
-    //         .build();
 
-    //         connection.on("ChangeRecieved", (input) => {
-    //             console.log('received: ' + input);
-    //         });
-    //         await connection.start();
-    //         await connection.invoke("Changed", input);
-            
-    //         setConnection(connection);
-           
-    //     }
-    //     catch(e) {
-    //         console.log("catched");
-    //     }
-    // }
         
     
     useEffect(() => {
@@ -77,7 +58,6 @@ export default function ChatMessages(props) {
         }
         connection.start().then(() => {
             connection.on("ChangeRecieved", (input) => {
-                console.log('received: ' + input);
                 setUpdateMessages(true);
                 setUpdateMessages(false);
             })
@@ -102,16 +82,12 @@ export default function ChatMessages(props) {
     useEffect(() => {
         async function getMessages(){
             (async () => {
-                const response = await fetch(`https://localhost:7038/api/contacts/:${props.contactUserName}/messages?user=${props.logInUserName}`);                
-                console.log(`response status is ${response.status}`);
+                const response = await fetch(`https://localhost:7038/api/contacts/${props.contactUserName}/messages?user=${props.logInUserName}`);                
                 const mediaType = response.headers.get('content-type');
                 let data;
                 if (mediaType.includes('json')) {
                   data = await response.json();
-                } else {
-                  data = await response.text();
                 }
-                console.log(data);
                 setCurrentMessages(data);
                 if(props.checkDatabaseForContacts){
                     props.setCheckDatabaseForContacts(false);
@@ -137,15 +113,7 @@ export default function ChatMessages(props) {
           body: JSON.stringify({ user: props.logInUserName,content:input})
         };
                 
-        const response = await fetch(`https://localhost:7038/api/contacts/:${props.contactUserName}/messages`, init);
-        const mediaType = response.headers.get('content-type');
-        let data;
-        if (mediaType.includes('json')) {
-            data = await response.json();
-        } else {
-            data = await response.text();
-        }
-        console.log(data);
+         await fetch(`https://localhost:7038/api/contacts/${props.contactUserName}/messages`, init);
     }
 
     async function UpdateContactServer(){
@@ -158,18 +126,8 @@ export default function ChatMessages(props) {
           headers,
           body: JSON.stringify({ from: props.logInUserName,to:props.contactUserName,content:input})
         };
-        console.log(`https://${props.contactServer}/api/transfer`);
                 
-        const response = await fetch(`https://${props.contactServer}/api/transfer`, init);
-        const mediaType = response.headers.get('content-type');
-        let data;
-        console.log(mediaType)
-        if (mediaType.includes('json')) {
-            data = await response.json();
-        } else {
-            data = await response.text();
-        }
-        console.log(data);
+        await fetch(`https://${props.contactServer}/api/transfer`, init);
     }
 
     //shows the time of sending messages
@@ -258,7 +216,7 @@ export default function ChatMessages(props) {
     const messagesList = currentMessages.map((message) => {
         if (message.sent === true) {
             return (
-                <div className="row">
+                <div className="row-message">
                     <div className="col-md-3 offset-md-9">
 
                         {(() => {
@@ -308,7 +266,7 @@ export default function ChatMessages(props) {
         }
         else {
             return (
-                <div className="row">
+                <div className="row-message">
                     <div className="col-md-3">
                         <div className="chat-bubble chat-bubble--left">
                             <p className="text-muted">{message.content}</p>
@@ -332,7 +290,7 @@ export default function ChatMessages(props) {
             <div className="chat-panel" ref={containerRef}>
                 {messagesList}
             </div>
-            <div className="row">
+            <div className="row-chat">
                 <div className="col-12">
                     <div className="new-message-panel">
                     {/*<Form className="input-message" onSubmit={e => {
@@ -341,10 +299,10 @@ export default function ChatMessages(props) {
                         newMessage(input);
                         }}>*/}
                         <Form className="input-message" onSubmit={e => {
-                            e.preventDefault();
-                            console.log("sending: " + input);}}>
+                            e.preventDefault();}}>
                         
                         <InputGroup >
+                        
                             <Dropdown drop="up">
                                 <Dropdown.Toggle className="dropdown-button">
                                     <i className="bi bi-paperclip "></i>

@@ -25,6 +25,8 @@ function Chat(props) {
     //info about the current user
     
     const [saveUser, setSaveUser] = useState((props.user === undefined) ? JSON.parse(sessionStorage.getItem('user')) : props.user);
+
+    
     useEffect(() => {
         if(props.user!=undefined){
             sessionStorage.setItem('user', JSON.stringify(props.user))
@@ -48,7 +50,6 @@ function Chat(props) {
         }
         connection.start().then(() => {
             connection.on("ChangeRecieved", (newContact) => {
-                console.log('received: ' + newContact);
                 setCheckDatabaseForContacts(true);
                 setCheckDatabaseForContacts(false);
             })
@@ -195,15 +196,6 @@ function Chat(props) {
         return 2;
     }
 
-
-
-    //checks if added contact is already a contact of current user
-    function compareContacts(item) {
-        if (item.id === newContact) {
-            setNewContactError(`${newContact} is already a contact`);
-        }
-
-    }
     return (
         <div className="container-fluid chat">
             <div className="row chat">
