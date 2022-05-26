@@ -217,7 +217,7 @@ export default function ChatMessages(props) {
     const messagesList = currentMessages.map((message) => {
         if (message.sent === true) {
             return (
-                <div className="row">
+                <div className="row-message">
                     <div className="col-md-3 offset-md-9">
 
                         {(() => {
@@ -267,7 +267,7 @@ export default function ChatMessages(props) {
         }
         else {
             return (
-                <div className="row">
+                <div className="row-message">
                     <div className="col-md-3">
                         <div className="chat-bubble chat-bubble--left">
                             <p className="text-muted">{message.content}</p>
@@ -291,7 +291,7 @@ export default function ChatMessages(props) {
             <div className="chat-panel" ref={containerRef}>
                 {messagesList}
             </div>
-            <div className="row">
+            <div className="row-chat">
                 <div className="col-12">
                     <div className="new-message-panel">
                     {/*<Form className="input-message" onSubmit={e => {
