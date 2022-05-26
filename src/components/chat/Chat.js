@@ -18,15 +18,18 @@ function Chat(props) {
     const [newContactNickname, setNewContactNickname] = useState("");
     const [newContact, setNewContact] = useState("");
     const [newContactServer, setNewContactServer] = useState("");
-    const [inValidNewContact, setInValidNewContact] = useState(false);
     const [newContactError, setNewContactError] = useState("");
 
     const [show, setShow] = useState(false);
     //last message update and time since
     //info about the current user
     
-    //const [saveUser, setSaveUser] = useState((props.user === undefined) ? JSON.parse(localStorage.getItem('user')) : props.user);
-
+    const [saveUser, setSaveUser] = useState((props.user === undefined) ? JSON.parse(sessionStorage.getItem('user')) : props.user);
+    useEffect(() => {
+        if(props.user!=undefined){
+            sessionStorage.setItem('user', JSON.stringify(props.user))
+        }
+    },[]);
 
     const [connection, setConnection] = useState(null);
 
@@ -37,6 +40,7 @@ function Chat(props) {
             .build();
         setConnection(connect);
     },[]);
+
 
     useEffect(() => {
         if(!connection) {
@@ -60,7 +64,7 @@ function Chat(props) {
 
     useEffect ( () => {
     async function findContacts(){
-        const response = await fetch('https://localhost:7038/api/Contacts/?user='+props.user.userName);
+        const response = await fetch('https://localhost:7038/api/Contacts/?user='+saveUser.userName);
         const mediaType = response.headers.get('content-type');
         let data;
         if (mediaType.includes('json')) {
@@ -119,7 +123,6 @@ function Chat(props) {
         setNewContact("");
         setNewContactServer("");
         setNewContactError("");
-        setInValidNewContact(false);
         setNewContactError("")
     };
 
@@ -128,7 +131,7 @@ function Chat(props) {
         if (newContact === "" || newContactNickname === "" || newContactServer === "") {
             setNewContactError("all fields are required");
         }
-        else if (newContact === props.user.userName) {
+        else if (newContact === saveUser.userName) {
             setNewContactError("can't add yourself as contact");
         }
         else {
@@ -168,7 +171,7 @@ function Chat(props) {
         const init = {
             method: 'POST',
             headers,
-            body: JSON.stringify({id:newContact,name:newContactNickname,server:newContactServer,user:props.user.userName})
+            body: JSON.stringify({id:newContact,name:newContactNickname,server:newContactServer,user:saveUser.userName})
           };
         await fetch('https://localhost:7038/api/contacts/AddContact', init);
     }
@@ -180,7 +183,7 @@ function Chat(props) {
         const init = {
             method: 'POST',
             headers,
-            body: JSON.stringify({from:props.user.userName,to:newContact,server:newContactServer})
+            body: JSON.stringify({from:saveUser.userName,to:newContact,server:newContactServer})
           };
         const response=await fetch('https://localhost:7038/api/invitation/AddContact', init);
         if(response.status==404){
@@ -198,7 +201,6 @@ function Chat(props) {
     function compareContacts(item) {
         if (item.id === newContact) {
             setNewContactError(`${newContact} is already a contact`);
-            setInValidNewContact(true);
         }
 
     }
@@ -208,7 +210,7 @@ function Chat(props) {
                 <div className="col-md-5 contacts-colomn">
                     <div className="profile-panel">
                         <img className="profile-image" src={"./images/cat4.png"} alt="icon"></img>
-                        <span className="profile-name">{props.user.nickname}</span>
+                        <span className="profile-name">{saveUser.nickname}</span>
                         <span className="add-contact" onClick={handleShow}>
                             <i className="bi bi-person-plus float-end"></i>
                         </span>
@@ -249,7 +251,7 @@ function Chat(props) {
 
                 <div className="col-md-7 chat-colomn" >
 
-                    {(selectedContact.name) ? (<ChatMessages  logInUserName={props.user.userName} contactUserName={selectedContact.id} nickname={selectedContact.name} img={"./images/cat2.png"} contactServer={selectedContact.server}
+                    {(selectedContact.name) ? (<ChatMessages  logInUserName={saveUser.userName} contactUserName={selectedContact.id} nickname={selectedContact.name} img={"./images/cat2.png"} contactServer={selectedContact.server}
                      setCheckDatabaseForContacts={setCheckDatabaseForContacts} checkDatabaseForContacts={checkDatabaseForContacts} />)
                         : <div className="select-text">Select a chat to start messaging</div>}
                 </div>

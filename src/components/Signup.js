@@ -130,7 +130,15 @@ function Signup() {
                             <input type="password" id="passwordRepeat" className="form-control mt-1 " placeholder="Password" onChange={(e)=>setRepeatPassword(e.target.value)}/>
                             <p className="error">{errors.repeatPassword}</p>
                         </div>
+                        {/*
                         <div>
+                            <label htmlFor="picture" className="sr-only">Add Image</label>
+                            <input type="file" id="image-upload" className="form-control mt-1" accept="image/*" onChange={handlePicture} /> 
+                            <p className="error">{errors.picture}</p> 
+                        </div>
+                        */}
+                        <div>
+                            
                             <label htmlFor="picture" className="sr-only">Add Image</label>
                             <input type="file" id="image-upload" className="form-control mt-1" accept="image/*" onChange={handlePicture} /> 
                             <p className="error">{errors.picture}</p> 
