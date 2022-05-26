@@ -293,40 +293,35 @@ export default function ChatMessages(props) {
             <div className="row-chat">
                 <div className="col-12">
                     <div className="new-message-panel">
-                    {/*<Form className="input-message" onSubmit={e => {
-                        e.preventDefault();
-                        console.log("sending: " + input);
-                        newMessage(input);
-                        }}>*/}
                         <Form className="input-message" onSubmit={e => {
                             e.preventDefault();}}>
                         
                         <InputGroup >
-                        
                             <Dropdown drop="up">
                                 <Dropdown.Toggle className="dropdown-button">
                                     <i className="bi bi-paperclip "></i>
                                 </Dropdown.Toggle>
-
                                 <Dropdown.Menu className="animate slideIn">
-                                    <Dropdown.Item className="item-1"
-                                        onClick={handleShowImageModal}>
+                                    <Dropdown.Item className="item-1">
+                                       {/* onClick={handleShowImageModal}*/} 
                                         <img className="image-icon" src="./images/image.png" alt="image" />
                                     </Dropdown.Item>
-                                    <Dropdown.Item className="item-2"
-                                        onClick={handleShowVideoModal}>
+                                    <Dropdown.Item className="item-2">
+                                        {/*onClick={handleShowVideoModal}*/}
                                         <img className="image-icon" src="./images/movie.png" alt="image" />
                                     </Dropdown.Item>
-                                    <Dropdown.Item className="item-3"
-                                        onClick={handleShowRecordModal}>
+                                    <Dropdown.Item className="item-3">
+                                        {/*onClick={handleShowRecordModal}*/}
                                         <img className="image-icon" src="./images/voice.png" alt="image" />
                                     </Dropdown.Item>
-                                    <Dropdown.Item className="item-4"
-                                        onClick={handleShowAudioModal}>
+                                    <Dropdown.Item className="item-4">
+                                        {/*onClick={handleShowAudioModal}*/}
                                         <img className="image-icon" src="./images/sound.png" alt="image" />
                                     </Dropdown.Item>
                                 </Dropdown.Menu>
                             </Dropdown>
+
+
                             {/*<Form onSubmit={e => {
                                 e.preventDefault();
                                 newMessage(text);

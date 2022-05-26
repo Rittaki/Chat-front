@@ -105,10 +105,15 @@ function Signup() {
                 {/*<div className="col-md-3 col-sm-4 col-xs-12"></div>*/}
                 {/*<div className="col-md-4 col-sm-4 col-xs-12">*/}
                     <div className="mt-20">
+                        
                         <form className="form-container" onSubmit={sunbmitFun}>
+                           {/*  
                         <div className='img-holder'>
+                        
                             <img src={picture} className="img1" />
+                            
                         </div>
+                        */}
                         <h1>Sign up</h1>
                         <div className="form-group mt-3">
                             <label htmlFor="user" className="sr-only">Username</label>
@@ -137,12 +142,6 @@ function Signup() {
                             <p className="error">{errors.picture}</p> 
                         </div>
                         */}
-                        <div>
-                            
-                            <label htmlFor="picture" className="sr-only">Add Image</label>
-                            <input type="file" id="image-upload" className="form-control mt-1" accept="image/*" onChange={handlePicture} /> 
-                            <p className="error">{errors.picture}</p> 
-                        </div>
                         <div className="mt-3">
                             <button className="btn btn-lg btn-primary btn-block">Create account</button>
                         </div>
